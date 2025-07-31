@@ -1,39 +1,42 @@
-    # This workflow will build and deploy a Vite React app to GitHub Pages.
-    name: Deploy React App to GitHub Pages
+# This workflow will build and deploy a Vite React app to GitHub Pages.
+name: Deploy React App to GitHub Pages
 
-    on:
-      push:
-        branches:
-          - main
+on:
+  push:
+    branches:
+      - main
 
-    # Grant GITHUB_TOKEN the permissions required to deploy to GitHub Pages
-    permissions:
-      contents: write
-      pages: write
-      id-token: write
+# Grant GITHUB_TOKEN the permissions required to deploy to GitHub Pages
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
-    jobs:
-      build-and-deploy:
-        runs-on: ubuntu-latest
-        steps:
-          - name: Checkout repository
-            uses: actions/checkout@v4
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-          - name: Setup Node.js environment
-            uses: actions/setup-node@v4
-            with:
-              node-version: '20.x'
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
 
-          - name: Install dependencies
-            run: npm install
+      - name: Install dependencies
+        run: npm install
 
-          - name: Build project
-            # This command runs the build using the 'dist' folder for deployment
-            run: npm run build
+      - name: Make vite executable
+        # This step is added to fix the "Permission denied" error by making the vite binary executable.
+        run: chmod +x node_modules/.bin/vite
 
-          - name: Deploy to GitHub Pages
-            uses: peaceiris/actions-gh-pages@v3
-            with:
-              github_token: ${{ secrets.GITHUB_TOKEN }}
-              publish_dir: ./dist
-    
+      - name: Build project
+        # This command runs the build using the 'dist' folder for deployment
+        run: npm run build
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
