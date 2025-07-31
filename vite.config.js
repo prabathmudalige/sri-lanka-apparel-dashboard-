@@ -6,4 +6,6 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/sri-lanka-apparel-dashboard-/',
+  // Add a root property to tell Vite where to find the index.html file
+  root: './',
 })
