@@ -6,11 +6,13 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   base: '/sri-lanka-apparel-dashboard-/',
-  // Set the root to the 'src' directory where index.html is likely located
-  root: './src',
+  // Explicitly define the entry point to resolve the "index.html" error.
   build: {
-    // Set the output directory for the build to the root of the repository
-    outDir: '../dist',
-    emptyOutDir: true,
+    outDir: 'dist',
+    rollupOptions: {
+      input: {
+        main: './index.html'
+      }
+    }
   }
 })
