@@ -1,0 +1,13 @@
+/*
+This file would contain your global CSS.
+For a Tailwind CSS setup, this is where you'd include the directives.
+*/
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom styles can go here if needed, but Tailwind classes are preferred. */
