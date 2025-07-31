@@ -1,7 +1,8 @@
 // The main component that holds the application state and renders the dashboard.
 import React, { useState } from 'react';
-import { Switch } from './components/ui/Switch';
-import { Label } from './components/ui/Label';
+// Corrected import path to match the local folder name "Ui" with a capital 'U'
+import { Switch } from './components/Ui/Switch';
+import { Label } from './components/Ui/Label';
 import Dashboard from './components/Dashboard';
 
 // Mock data for the detailed dashboard with Sri Lankan context
@@ -18,39 +19,31 @@ const mockData = {
   ],
   waterUsage: [
     { name: 'River Water', value: 60, color: '#3b82f6' },
-    { name: 'Groundwater', value: 30, color: '#2563eb' },
-    { name: 'Recycled', value: 10, color: '#1d4ed8' },
+    { name: 'Groundwater', value: 30, color: '#60a5fa' },
+    { name: 'Municipal Water', value: 10, color: '#93c5fd' },
   ],
   waterTrend: [
-    { name: '2022', 'Withdrawal': 12000, 'Discharge': 9500 },
-    { name: '2023', 'Withdrawal': 11500, 'Discharge': 9100 },
-    { name: '2024', 'Withdrawal': 10800, 'Discharge': 8700 },
-  ],
-  wasteData: [
-    { name: 'Textile Waste', value: 65, color: '#4b5563' },
-    { name: 'Packaging', value: 20, color: '#6b7280' },
-    { name: 'Other', value: 15, color: '#9ca3af' },
+    { name: '2022', 'Withdrawal': 100, 'Discharge': 95 },
+    { name: '2023', 'Withdrawal': 95, 'Discharge': 90 },
+    { name: '2024', 'Withdrawal': 92, 'Discharge': 88 },
   ],
   wasteTrend: [
-    { name: '2022', 'Recycled': 780, 'Landfill': 280, 'Total': 1060 },
-    { name: '2023', 'Recycled': 850, 'Landfill': 250, 'Total': 1100 },
-    { name: '2024', 'Recycled': 900, 'Landfill': 200, 'Total': 1100 },
+    { name: '2022', 'Recycled': 75, 'Landfilled': 25 },
+    { name: '2023', 'Recycled': 80, 'Landfilled': 20 },
+    { name: '2024', 'Recycled': 82, 'Landfilled': 18 },
   ],
   physicalRisks: [
-    { name: 'Monsoon Flooding', impact: 'Supply chain disruption, factory closures, transport halts', mitigation: 'Improved drainage, elevation of critical equipment, disaster preparedness' },
-    { name: 'Water Scarcity & Drought', impact: 'Increased operating costs, production halts (especially in dyeing)', mitigation: 'Water recycling, rainwater harvesting, efficient dyeing technologies' },
-    { name: 'Extreme Weather Events', impact: 'Damage to facilities, power outages, worker safety', mitigation: 'Reinforced infrastructure, emergency response plans' },
+    { name: 'Increased Flooding', impact: 'Disruption of supply chains, damage to factory infrastructure.', mitigation: 'Relocate critical equipment, implement flood defenses.' },
+    { name: 'Water Scarcity', impact: 'Operational downtime, increased water costs.', mitigation: 'Invest in water-efficient machinery, implement rainwater harvesting.' },
   ],
   transitionRisks: [
-    { name: 'EU GSP+ Changes', impact: 'Loss of preferential market access, increased tariffs', mitigation: 'Proactive engagement with EU bodies, diversification of export markets' },
-    { name: 'Fossil Fuel Price Volatility', impact: 'Increased energy costs for factories and logistics', mitigation: 'Investment in solar power, energy efficiency audits, use of biomass boilers' },
-    { name: 'Evolving International Labor Standards', impact: 'Reputational damage, market access restrictions', mitigation: 'Transparent reporting, worker empowerment programs, strong union relations' },
+    { name: 'Carbon Tax', impact: 'Increased operating costs, reduced profit margins.', mitigation: 'Shift to renewable energy, improve energy efficiency.' },
+    { name: 'Shifting Consumer Preferences', impact: 'Loss of market share.', mitigation: 'Invest in sustainable materials, obtain eco-certifications.' },
   ],
   climateOpportunities: [
-    { name: 'Sustainable Product Innovation', description: 'Developing new product lines using recycled, organic, or waste materials.', benefit: 'Increased brand reputation, access to new markets, premium pricing' },
     { name: 'Renewable Energy Adoption', description: 'Installing solar panels on factory roofs and shifting to a cleaner energy mix.', benefit: 'Reduced operating costs, energy independence, enhanced brand image' },
     { name: 'Circular Economy Initiatives', description: 'Partnering with local startups to turn textile waste into new products or inputs.', benefit: 'Waste reduction, new revenue streams, strengthening local supply chains' },
-  ]
+  ],
 };
 
 const App = () => {
@@ -70,6 +63,7 @@ const App = () => {
           <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
         </div>
       </header>
+
       <Dashboard data={mockData} isDarkMode={isDarkMode} />
     </div>
   );
