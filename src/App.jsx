@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+// The main component that holds the application state and renders the dashboard.
+import React, { useState, useEffect } from 'react';
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, Sector, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer
 } from 'recharts';
 import { Activity, Droplets, Recycle, Leaf, Cloud, Scale } from 'lucide-react';
 
-// Mock components from shadcn/ui to make the application self-contained
+// Mock components for Switch, Label, and Card from shadcn/ui to make the application self-contained.
+// These are not the actual shadcn components but functional equivalents using Tailwind.
 function Label({ htmlFor, children, ...props }) {
   return (
     <label htmlFor={htmlFor} className={`text-sm text-gray-500 dark:text-gray-400 ${props.className}`}>
@@ -79,8 +81,14 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
   );
 };
 
-// Component that renders the various charts and metric breakdowns
+// Component that renders the various charts and metric breakdowns.
 const Metrics = ({ data, isDarkMode }) => {
+  // State to check if the component is mounted to prevent hydration errors with ResponsiveContainer
+  const [isMounted, setIsMounted] = useState(false);
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
@@ -93,21 +101,23 @@ const Metrics = ({ data, isDarkMode }) => {
           </CardHeader>
           <CardContent>
             <div className="w-full h-80">
-              <ResponsiveContainer>
-                <LineChart data={data.ghgEmissions}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#4b5563' : '#e5e7eb'} />
-                  <XAxis dataKey="name" stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
-                  <YAxis stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
-                    labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
-                  />
-                  <Legend />
-                  <Line type="monotone" dataKey="Scope 1" stroke="#ef4444" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Scope 2" stroke="#f97316" strokeWidth={2} />
-                  <Line type="monotone" dataKey="Scope 3" stroke="#8b5cf6" strokeWidth={2} />
-                </LineChart>
-              </ResponsiveContainer>
+              {isMounted && (
+                <ResponsiveContainer>
+                  <LineChart data={data.ghgEmissions}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#4b5563' : '#e5e7eb'} />
+                    <XAxis dataKey="name" stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
+                    <YAxis stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
+                      labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
+                    />
+                    <Legend />
+                    <Line type="monotone" dataKey="Scope 1" stroke="#ef4444" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Scope 2" stroke="#f97316" strokeWidth={2} />
+                    <Line type="monotone" dataKey="Scope 3" stroke="#8b5cf6" strokeWidth={2} />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -121,29 +131,31 @@ const Metrics = ({ data, isDarkMode }) => {
           </CardHeader>
           <CardContent className="flex justify-center items-center">
             <div className="w-full h-80">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={data.scope3Breakdown}
-                    cx="50%"
-                    cy="50%"
-                    labelLine={false}
-                    label={renderCustomizedLabel}
-                    outerRadius={120}
-                    fill="#8884d8"
-                    dataKey="value"
-                  >
-                    {data.scope3Breakdown.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
-                    labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              {isMounted && (
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={data.scope3Breakdown}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={renderCustomizedLabel}
+                      outerRadius={120}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {data.scope3Breakdown.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
+                      labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -159,29 +171,31 @@ const Metrics = ({ data, isDarkMode }) => {
           </CardHeader>
           <CardContent className="flex justify-center items-center">
             <div className="w-full h-80">
-              <ResponsiveContainer>
-                <PieChart>
-                  <Pie
-                    data={data.waterUsage}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={60}
-                    outerRadius={80}
-                    fill="#8884d8"
-                    paddingAngle={5}
-                    dataKey="value"
-                  >
-                    {data.waterUsage.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                  <Tooltip
-                    contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
-                    labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
-                  />
-                  <Legend />
-                </PieChart>
-              </ResponsiveContainer>
+              {isMounted && (
+                <ResponsiveContainer>
+                  <PieChart>
+                    <Pie
+                      data={data.waterUsage}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={60}
+                      outerRadius={80}
+                      fill="#8884d8"
+                      paddingAngle={5}
+                      dataKey="value"
+                    >
+                      {data.waterUsage.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip
+                      contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
+                      labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
+                    />
+                    <Legend />
+                  </PieChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -195,20 +209,22 @@ const Metrics = ({ data, isDarkMode }) => {
           </CardHeader>
           <CardContent>
             <div className="w-full h-80">
-              <ResponsiveContainer>
-                <BarChart data={data.wasteTrend}>
-                  <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#4b5563' : '#e5e7eb'} />
-                  <XAxis dataKey="name" stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
-                  <YAxis stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
-                  <Tooltip
-                    contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
-                    labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
-                  />
-                  <Legend />
-                  <Bar dataKey="Recycled" stackId="a" fill="#10b981" />
-                  <Bar dataKey="Landfilled" stackId="a" fill="#ef4444" />
-                </BarChart>
-              </ResponsiveContainer>
+              {isMounted && (
+                <ResponsiveContainer>
+                  <BarChart data={data.wasteTrend}>
+                    <CartesianGrid strokeDasharray="3 3" stroke={isDarkMode ? '#4b5563' : '#e5e7eb'} />
+                    <XAxis dataKey="name" stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
+                    <YAxis stroke={isDarkMode ? '#a1a1aa' : '#71717a'} />
+                    <Tooltip
+                      contentStyle={{ backgroundColor: isDarkMode ? '#1f2937' : '#fff', border: '1px solid #4b5563', borderRadius: '8px' }}
+                      labelStyle={{ color: isDarkMode ? '#e5e7eb' : '#1f2937' }}
+                    />
+                    <Legend />
+                    <Bar dataKey="Recycled" stackId="a" fill="#10b981" />
+                    <Bar dataKey="Landfilled" stackId="a" fill="#ef4444" />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
             </div>
           </CardContent>
         </Card>
@@ -218,7 +234,7 @@ const Metrics = ({ data, isDarkMode }) => {
 };
 
 
-// Component that displays the physical risks, transition risks, and opportunities
+// Component that displays the physical risks, transition risks, and opportunities.
 const RisksAndOpportunities = ({ data }) => {
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
@@ -360,8 +376,8 @@ const Dashboard = ({ data, isDarkMode }) => {
           </CardContent>
         </Card>
       </div>
-      <Metrics data={data} isDarkMode={isDarkMode} />
-      <RisksAndOpportunities data={data} />
+      <Metrics data={mockData} isDarkMode={isDarkMode} />
+      <RisksAndOpportunities data={mockData} />
     </>
   );
 };
@@ -382,34 +398,27 @@ const mockData = {
   waterUsage: [
     { name: 'River Water', value: 60, color: '#3b82f6' },
     { name: 'Groundwater', value: 30, color: '#60a5fa' },
-    { name: 'Municipal Water', value: 10, color: '#93c5fd' },
-  ],
-  waterTrend: [
-    { name: '2022', 'Withdrawal': 100, 'Discharge': 95 },
-    { name: '2023', 'Withdrawal': 95, 'Discharge': 90 },
-    { name: '2024', 'Withdrawal': 92, 'Discharge': 88 },
+    { name: 'Municipal Supply', value: 10, color: '#93c5fd' },
   ],
   wasteTrend: [
-    { name: '2022', 'Recycled': 75, 'Landfilled': 25 },
-    { name: '2023', 'Recycled': 80, 'Landfilled': 20 },
-    { name: '2024', 'Recycled': 82, 'Landfilled': 18 },
+    { name: '2022', Recycled: 75, Landfilled: 15 },
+    { name: '2023', Recycled: 80, Landfilled: 12 },
+    { name: '2024', Recycled: 82, Landfilled: 10 },
   ],
   physicalRisks: [
-    { name: 'Increased Flooding', impact: 'Disruption of supply chains, damage to factory infrastructure.', mitigation: 'Relocate critical equipment, implement flood defenses.' },
-    { name: 'Water Scarcity', impact: 'Operational downtime, increased water costs.', mitigation: 'Invest in water-efficient machinery, implement rainwater harvesting.' },
+    { name: 'Increased Flooding', impact: 'Disruption to factory operations, damage to infrastructure, and supply chain delays.', mitigation: 'Relocating critical equipment to higher floors, improving drainage systems, and developing a disaster recovery plan.' },
+    { name: 'Water Scarcity', impact: 'Reduced water availability for textile processing, leading to operational constraints.', mitigation: 'Implementing water recycling systems, investing in drought-resistant technologies, and diversifying water sources.' },
   ],
   transitionRisks: [
-    { name: 'Carbon Tax', impact: 'Increased operating costs, reduced profit margins.', mitigation: 'Shift to renewable energy, improve energy efficiency.' },
-    { name: 'Shifting Consumer Preferences', impact: 'Loss of market share.', mitigation: 'Invest in sustainable materials, obtain eco-certifications.' },
+    { name: 'Carbon Tax', impact: 'Increased operating costs due to new carbon pricing policies.', mitigation: 'Investing in energy efficiency, transitioning to renewable energy, and lobbying for government incentives.' },
+    { name: 'Regulatory Changes', impact: 'Higher compliance costs and potential market access restrictions.', mitigation: 'Proactively engaging with policymakers, staying ahead of new regulations, and certifying products with sustainable standards.' },
   ],
   climateOpportunities: [
     { name: 'Renewable Energy Adoption', description: 'Installing solar panels on factory roofs and shifting to a cleaner energy mix.', benefit: 'Reduced operating costs, energy independence, enhanced brand image' },
     { name: 'Circular Economy Initiatives', description: 'Partnering with local startups to turn textile waste into new products or inputs.', benefit: 'Waste reduction, new revenue streams, strengthening local supply chains' },
-  ],
+  ]
 };
 
-
-// The main component that holds the application state and renders the dashboard.
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -427,7 +436,6 @@ const App = () => {
           <Switch id="dark-mode" checked={isDarkMode} onCheckedChange={setIsDarkMode} />
         </div>
       </header>
-
       <Dashboard data={mockData} isDarkMode={isDarkMode} />
     </div>
   );
